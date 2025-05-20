@@ -1,6 +1,7 @@
 
 "use client";
 
+import type { SnortRule } from '@/types';
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -8,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import { FilePenLine, Trash2, PlusCircle } from 'lucide-react';
-import type { SnortRule } from '@/types';
 import { Input } from '@/components/ui/input';
 
 const initialRules: SnortRule[] = [
@@ -21,30 +21,9 @@ export function RulesEditor() {
   const [newRule, setNewRule] = useState('');
   const [newRuleDescription, setNewRuleDescription] = useState('');
   const { toast } = useToast();
-  const [isClient, setIsClient] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    setIsClient(true);
-    const storedRules = localStorage.getItem('snortRules');
-    if (storedRules) {
-      try {
-        setRules(JSON.parse(storedRules));
-      } catch (error) {
-        console.error("Failed to parse stored rules:", error);
-        setRules(initialRules); 
-      }
-    } else {
-      setRules(initialRules);
-    }
-  }, []);
-
-  useEffect(() => {
-    if(isClient) {
-      localStorage.setItem('snortRules', JSON.stringify(rules));
-    }
-  }, [rules, isClient]);
-
-  const handleAddRule = () => {
+  function handleAddRule(): void {
     if (newRule.trim() === '') {
       toast({ title: "Error", description: "Rule content cannot be empty.", variant: "destructive" });
       return;
@@ -59,33 +38,43 @@ export function RulesEditor() {
     setNewRule('');
     setNewRuleDescription('');
     toast({ title: "Rule Added", description: "New Snort rule has been added." });
-  };
+  }
   
-  const handleDeleteRule = (id: string) => {
+  function handleDeleteRule(id: string): void {
     setRules(prevRules => prevRules.filter(rule => rule.id !== id));
     toast({ title: "Rule Deleted", description: "Snort rule has been deleted.", variant: "destructive" });
-  };
+  }
   
-  const handleToggleRule = (id: string) => {
-    const ruleIndex = rules.findIndex(rule => rule.id === id);
-    if (ruleIndex === -1) return;
+  function handleToggleRule(id: string): void {
+    setRules(prevRules =>
+      prevRules.map(rule =>
+        rule.id === id ? { ...rule, isEnabled: !rule.isEnabled } : rule
+      )
+    );
+  }
 
-    const ruleToUpdate = rules[ruleIndex];
-    const updatedRule = {
-      ...ruleToUpdate,
-      isEnabled: !ruleToUpdate.isEnabled,
-    };
+  useEffect(() => {
+    const storedRules = localStorage.getItem('snortRules');
+    if (storedRules) {
+      try {
+        setRules(JSON.parse(storedRules));
+      } catch (error) {
+        console.error("Failed to parse stored rules:", error);
+        setRules(initialRules);
+      }
+    } else {
+      setRules(initialRules);
+    }
+    setIsLoading(false);
+  }, []);
 
-    const updatedRulesArray = [
-      ...rules.slice(0, ruleIndex),
-      updatedRule,
-      ...rules.slice(ruleIndex + 1),
-    ];
-    
-    setRules(updatedRulesArray);
-  };
+  useEffect(() => {
+    if (!isLoading) {
+      localStorage.setItem('snortRules', JSON.stringify(rules));
+    }
+  }, [rules, isLoading]);
 
-  if (!isClient) {
+  if (isLoading) {
     return (
       <Card>
         <CardHeader>
