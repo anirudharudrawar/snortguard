@@ -85,7 +85,7 @@ export function RulesEditor() {
         </CardContent>
       </Card>
     );
-  }; // Explicit semicolon added here
+  }
 
   return (
     <Card className="shadow-lg">
