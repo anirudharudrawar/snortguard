@@ -45,7 +45,7 @@ export function RulesEditor() {
     }
   }, [rules, isClient]);
 
-  const handleAddRule = (): void => {
+  const handleAddRule = () => {
     if (newRule.trim() === '') {
       toast({ title: "Error", description: "Rule content cannot be empty.", variant: "destructive" });
       return;
@@ -62,17 +62,16 @@ export function RulesEditor() {
     toast({ title: "Rule Added", description: "New Snort rule has been added." });
   };
 
-  const handleDeleteRule = (id: string): void => {
+  const handleDeleteRule = (id: string) => {
     setRules(prevRules => prevRules.filter(rule => rule.id !== id));
     toast({ title: "Rule Deleted", description: "Snort rule has been deleted.", variant: "destructive" });
   };
   
-  const handleToggleRule = (id: string): void => {
-    setRules(prevRules => 
-      prevRules.map(rule => 
-        rule.id === id ? { ...rule, isEnabled: !rule.isEnabled } : rule
-      )
+  const handleToggleRule = (id: string) => {
+    const updatedRulesArray = rules.map(rule => 
+      rule.id === id ? { ...rule, isEnabled: !rule.isEnabled } : rule
     );
+    setRules(updatedRulesArray);
   };
 
   if (!isClient) {
@@ -86,7 +85,7 @@ export function RulesEditor() {
         </CardContent>
       </Card>
     );
-  }
+  }; // Explicit semicolon added here
 
   return (
     <Card className="shadow-lg">
