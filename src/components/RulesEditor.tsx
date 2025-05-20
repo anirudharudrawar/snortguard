@@ -25,14 +25,13 @@ export function RulesEditor() {
 
   useEffect(() => {
     setIsClient(true);
-    // Load rules from local storage or use initial if not available
     const storedRules = localStorage.getItem('snortRules');
     if (storedRules) {
       try {
         setRules(JSON.parse(storedRules));
       } catch (error) {
         console.error("Failed to parse stored rules:", error);
-        setRules(initialRules); // Fallback to initial rules if parsing fails
+        setRules(initialRules); 
       }
     } else {
       setRules(initialRules);
@@ -68,9 +67,21 @@ export function RulesEditor() {
   };
   
   const handleToggleRule = (id: string) => {
-    const updatedRulesArray = rules.map(rule => 
-      rule.id === id ? { ...rule, isEnabled: !rule.isEnabled } : rule
-    );
+    const ruleIndex = rules.findIndex(rule => rule.id === id);
+    if (ruleIndex === -1) return;
+
+    const ruleToUpdate = rules[ruleIndex];
+    const updatedRule = {
+      ...ruleToUpdate,
+      isEnabled: !ruleToUpdate.isEnabled,
+    };
+
+    const updatedRulesArray = [
+      ...rules.slice(0, ruleIndex),
+      updatedRule,
+      ...rules.slice(ruleIndex + 1),
+    ];
+    
     setRules(updatedRulesArray);
   };
 
