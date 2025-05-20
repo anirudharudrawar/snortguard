@@ -7,9 +7,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
-import { FilePenLine, Save, Trash2, PlusCircle } from 'lucide-react';
+import { FilePenLine, Trash2, PlusCircle } from 'lucide-react';
 import type { SnortRule } from '@/types';
-import { Input } from '@/components/ui/input'; // Corrected import path
+import { Input } from '@/components/ui/input';
 
 const initialRules: SnortRule[] = [
   { id: '1', rawRule: 'alert tcp any any -> any 80 (msg:"HTTP Traffic Detected"; sid:1000001; rev:1;)', description: "Detects any HTTP traffic", isEnabled: true },
@@ -45,7 +45,7 @@ export function RulesEditor() {
     }
   }, [rules, isClient]);
 
-  const handleAddRule = () => {
+  const handleAddRule = (): void => {
     if (newRule.trim() === '') {
       toast({ title: "Error", description: "Rule content cannot be empty.", variant: "destructive" });
       return;
@@ -62,12 +62,12 @@ export function RulesEditor() {
     toast({ title: "Rule Added", description: "New Snort rule has been added." });
   };
 
-  const handleDeleteRule = (id: string) => {
+  const handleDeleteRule = (id: string): void => {
     setRules(prevRules => prevRules.filter(rule => rule.id !== id));
     toast({ title: "Rule Deleted", description: "Snort rule has been deleted.", variant: "destructive" });
   };
   
-  const handleToggleRule = (id: string) => {
+  const handleToggleRule = (id: string): void => {
     setRules(prevRules => 
       prevRules.map(rule => 
         rule.id === id ? { ...rule, isEnabled: !rule.isEnabled } : rule
