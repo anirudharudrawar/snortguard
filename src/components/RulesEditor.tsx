@@ -1,28 +1,31 @@
 
 "use client";
 
-import type { SnortRule } from '@/types';
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { useToast } from "@/hooks/use-toast";
-import { FilePenLine, Trash2, PlusCircle } from 'lucide-react';
-import { Input } from '@/components/ui/input';
+// import { Textarea } from "@/components/ui/textarea";
+// import { Button } from "@/components/ui/button";
+// import { ScrollArea } from "@/components/ui/scroll-area";
+// import { useToast } from "@/hooks/use-toast";
+import { FilePenLine, /* Trash2, PlusCircle */ } from 'lucide-react';
+// import { Input } from '@/components/ui/input';
+// import type { SnortRule } from '@/types';
 
+/*
 const initialRules: SnortRule[] = [
   { id: '1', rawRule: 'alert tcp any any -> any 80 (msg:"HTTP Traffic Detected"; sid:1000001; rev:1;)', description: "Detects any HTTP traffic", isEnabled: true },
   { id: '2', rawRule: 'alert icmp any any -> any any (msg:"ICMP Packet Detected"; sid:1000002; rev:1;)', description: "Detects any ICMP packet", isEnabled: true },
 ];
+*/
 
 export function RulesEditor() {
-  const [rules, setRules] = useState<SnortRule[]>([]);
-  const [newRule, setNewRule] = useState('');
-  const [newRuleDescription, setNewRuleDescription] = useState('');
-  const { toast } = useToast();
+  // const [rules, setRules] = useState<SnortRule[]>([]);
+  // const [newRule, setNewRule] = useState('');
+  // const [newRuleDescription, setNewRuleDescription] = useState('');
+  // const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(true);
 
+  /*
   function handleAddRule(): void {
     if (newRule.trim() === '') {
       toast({ title: "Error", description: "Rule content cannot be empty.", variant: "destructive" });
@@ -52,27 +55,31 @@ export function RulesEditor() {
       )
     );
   }
+  */
 
   useEffect(() => {
-    const storedRules = localStorage.getItem('snortRules');
-    if (storedRules) {
-      try {
-        setRules(JSON.parse(storedRules));
-      } catch (error) {
-        console.error("Failed to parse stored rules:", error);
-        setRules(initialRules);
-      }
-    } else {
-      setRules(initialRules);
-    }
+    // Simulate loading
+    // const storedRules = localStorage.getItem('snortRules');
+    // if (storedRules) {
+    //   try {
+    //     setRules(JSON.parse(storedRules));
+    //   } catch (error) {
+    //     console.error("Failed to parse stored rules:", error);
+    //     setRules(initialRules);
+    //   }
+    // } else {
+    //   setRules(initialRules);
+    // }
     setIsLoading(false);
   }, []);
 
+  /*
   useEffect(() => {
     if (!isLoading) {
-      localStorage.setItem('snortRules', JSON.stringify(rules));
+      // localStorage.setItem('snortRules', JSON.stringify(rules));
     }
   }, [rules, isLoading]);
+  */
 
   if (isLoading) {
     return (
@@ -92,11 +99,13 @@ export function RulesEditor() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <FilePenLine className="h-6 w-6 text-primary" />
-          Snort Rules Editor
+          Snort Rules Editor (Simplified)
         </CardTitle>
         <CardDescription>Define and manage your Snort intrusion detection rules.</CardDescription>
       </CardHeader>
       <CardContent>
+        <p>Content will be here.</p>
+        {/*
         <div className="space-y-4 mb-6">
           <Textarea
             placeholder="Enter new Snort rule (e.g., alert tcp any any -> any any (msg:\"Test Rule\"; sid:2000000; rev:1;))"
@@ -152,6 +161,7 @@ export function RulesEditor() {
           </div>
           )}
         </ScrollArea>
+        */}
       </CardContent>
     </Card>
   );
