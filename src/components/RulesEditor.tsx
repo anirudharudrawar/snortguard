@@ -45,7 +45,7 @@ export function RulesEditor() {
       setRules(initialRules);
     }
     setIsLoading(false);
-  }, []); // Removed toast from dependencies as initialRules is stable
+  }, []);
 
   useEffect(() => {
     if (!isLoading) {
@@ -89,11 +89,11 @@ export function RulesEditor() {
   };
   
   const handleToggleRule = (id: string): void => {
-    const updatedRules = rules.map(rule =>
+    const updatedRulesArray = rules.map(rule =>
       rule.id === id ? { ...rule, isEnabled: !rule.isEnabled } : rule
     );
-    setRules(updatedRules);
-    const ruleToggled = updatedRules.find(r => r.id === id);
+    setRules(updatedRulesArray);
+    const ruleToggled = updatedRulesArray.find(r => r.id === id);
     if (ruleToggled) {
       toast({ title: `Rule ${ruleToggled.isEnabled ? "Enabled" : "Disabled"}`, description: `Rule SID:${ruleToggled.rawRule.match(/sid:(\d+)/)?.[1] || 'N/A'} status changed.` });
     }
