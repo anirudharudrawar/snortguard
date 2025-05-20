@@ -61,7 +61,7 @@ export function RulesEditor() {
     setNewRuleDescription('');
     toast({ title: "Rule Added", description: "New Snort rule has been added." });
   };
-
+  
   const handleDeleteRule = (id: string) => {
     setRules(prevRules => prevRules.filter(rule => rule.id !== id));
     toast({ title: "Rule Deleted", description: "Snort rule has been deleted.", variant: "destructive" });
