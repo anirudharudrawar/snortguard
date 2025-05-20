@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { AlertTriangle, ShieldAlert, Info, ShieldCheck, Network } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useToast } from "@/hooks/use-toast"; // Added for toast notifications
 
 const mockAlerts: Alert[] = [
   { id: '1', timestamp: new Date(Date.now() - 1000 * 60 * 5), severity: 'High', description: 'Potential SQL Injection attempt detected.', sourceIp: '192.168.1.101', destinationIp: '10.0.0.5', protocol: 'TCP', ruleId: 'SID:2001219' },
@@ -39,6 +40,7 @@ const SeverityBadge: React.FC<{ severity: Alert['severity'] }> = ({ severity }) 
 export function AlertViewer() {
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [isClient, setIsClient] = useState(false);
+  const { toast } = useToast(); // Initialize toast
 
   useEffect(() => {
     setIsClient(true);
@@ -57,11 +59,25 @@ export function AlertViewer() {
         protocol: ['TCP', 'UDP', 'ICMP'][Math.floor(Math.random() * 3)],
         ruleId: `SID:${Math.floor(Math.random() * 1000000) + 2000000}`
       };
+
+      // Log new alert to console
+      console.info(`[SnortGuard Event Log] New Alert:`, JSON.parse(JSON.stringify(newAlert)));
+
+
+      // Show toast notification for High or Critical alerts
+      if (newAlert.severity === 'High' || newAlert.severity === 'Critical') {
+        toast({
+          title: `${newAlert.severity} Severity Alert!`,
+          description: newAlert.description,
+          variant: newAlert.severity === 'Critical' ? 'destructive' : 'default',
+        });
+      }
+
       setAlerts(prevAlerts => [newAlert, ...prevAlerts].slice(0, 50)); // Keep max 50 alerts
     }, 5000); // Add new alert every 5 seconds
 
     return () => clearInterval(intervalId);
-  }, []);
+  }, [toast]); // Added toast to dependency array
 
   if (!isClient) {
     return <Card><CardHeader><CardTitle>Loading Alerts...</CardTitle></CardHeader><CardContent><div className="h-96"></div></CardContent></Card>;
@@ -74,7 +90,7 @@ export function AlertViewer() {
           <BellRingIcon className="h-6 w-6 text-primary" />
           Intrusion Alerts
         </CardTitle>
-        <CardDescription>Real-time (simulated) view of network intrusion alerts.</CardDescription>
+        <CardDescription>Real-time (simulated) view of network intrusion alerts. Check console for logs.</CardDescription>
       </CardHeader>
       <CardContent>
         <ScrollArea className="h-[calc(100vh-20rem)] pr-4">
@@ -146,3 +162,4 @@ function BellRingIcon(props: React.SVGProps<SVGSVGElement>) {
     </svg>
   )
 }
+
